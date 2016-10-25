@@ -43,19 +43,15 @@ class Exporter
         switch ($format) {
             case 'xls':
                 $writer = new XlsWriter('php://output');
-                $contentType = 'application/vnd.ms-excel';
                 break;
             case 'xml':
                 $writer = new XmlWriter('php://output');
-                $contentType = 'text/xml';
                 break;
             case 'json':
                 $writer = new JsonWriter('php://output');
-                $contentType = 'application/json';
                 break;
             case 'csv':
                 $writer = new CsvWriter('php://output', ',', '"', '', true, true);
-                $contentType = 'text/csv';
                 break;
             default:
                 throw new \RuntimeException('Invalid format');
@@ -67,7 +63,7 @@ class Exporter
         };
 
         return new StreamedResponse($callback, 200, array(
-            'Content-Type' => $contentType,
+            'Content-Type' => $writer->getDefaultMimeType(),
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
         ));
     }
